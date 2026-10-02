@@ -1,4 +1,8 @@
 package com.example
 
-@main def hello(name: String = "World"): Unit =
-  println(s"Hello, $name!")
+object HelloWorld {
+  def main(args: Array[String]): Unit = {
+    val name = args.headOption.getOrElse("World")
+    println(s"Hello, $name!")
+  }
+}

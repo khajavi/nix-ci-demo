@@ -1,6 +1,10 @@
 ThisBuild / name := "hello-world-scala"
 ThisBuild / version := "0.1.0"
-ThisBuild / scalaVersion := "3.3.1"
+val scala213 = "2.13.16"
+val scala3 = "3.3.1"
+
+ThisBuild / scalaVersion := scala3
+ThisBuild / crossScalaVersions := Seq(scala213, scala3)
 ThisBuild / organization := "com.example"
 
 lazy val root = (project in file("."))

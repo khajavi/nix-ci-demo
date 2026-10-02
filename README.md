@@ -21,6 +21,8 @@ You're now in a shell with JDK 21 and sbt pre-configured. The sbt launcher is fe
 ```bash
 sbt compile     # Compile the project
 sbt test        # Run tests
+sbt +test       # Run tests on all cross-built Scala versions
+sbt ++2.13.16 test  # Run tests on a specific Scala version
 sbt 'run World' # Run the application with argument
 sbt run         # Run with default "World" argument
 ```
@@ -41,7 +43,7 @@ This project pins:
 
 - **JDK**: 21 (via nixpkgs 23.11)
 - **sbt**: 1.9.8 (in `project/build.properties`)
-- **Scala**: 3.3.1 (in `build.sbt`)
+- **Scala**: 3.3.1 default; cross-built for 2.13.16 and 3.3.1 (`crossScalaVersions` in `build.sbt`)
 - **Nix packages**: Locked in `flake.lock`
 
 Any developer (or CI) running `nix develop && sbt test` gets the **exact same environment** and dependency versions.
@@ -69,7 +71,7 @@ The workflow lives in `.github/workflows/ci.yml`. It runs on pushes and pull req
 
 ```yaml
 nix develop --command bash -c "sbt scalafmtCheckAll scalafmtSbtCheck"
-nix develop --command bash -c "sbt clean compile test"
+nix develop --command bash -c "sbt clean +compile +test"
 nix develop --command bash -c "sbt 'run World'"
 ```
 
@@ -88,10 +90,12 @@ libraryDependencies ++= Seq(
 
 ### Update Scala Version
 
-Change in `build.sbt`:
+Change the version vals in `build.sbt`:
 ```scala
-ThisBuild / scalaVersion := "3.4.0"
+val scala3 = "3.4.0"
 ```
+
+Source must stay valid for every version in `crossScalaVersions`, so avoid Scala 3-only syntax (e.g. `@main`, braceless syntax) in `src/`.
 
 ### Add More Tools to Dev Environment
 
