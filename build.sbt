@@ -1,6 +1,6 @@
 ThisBuild / name := "hello-world-scala"
 ThisBuild / version := "0.1.0"
-val scala213 = "2.13.16"
+val scala213 = "2.13.18"
 val scala3 = "3.3.8"
 
 ThisBuild / scalaVersion := scala3

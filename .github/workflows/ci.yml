@@ -28,7 +28,7 @@ jobs:
       fail-fast: false
       matrix:
         # Keep in sync with crossScalaVersions in build.sbt
-        scala: ["2.13.16", "3.3.8"]
+        scala: ["2.13.18", "3.3.8"]
     steps:
       - uses: actions/checkout@v7
 
