@@ -18,11 +18,6 @@ jobs:
           extra-nix-config: |
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
-      - uses: cachix/cachix-action@v12
-        with:
-          name: milad-nix-cache
-          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-
       - name: Build and Test
         run: nix develop --command bash -c "sbt clean compile test"
 
