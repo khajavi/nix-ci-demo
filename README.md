@@ -59,6 +59,8 @@ Any developer (or CI) running `nix develop && sbt test` gets the **exact same en
 ├── project/build.properties  # Pinned sbt version
 ├── project/plugins.sbt       # sbt plugins (scalafmt)
 ├── .scalafmt.conf            # scalafmt config
+├── scripts/generate-ci.py    # Generates scripts/ci.sh from the CI workflow
+├── scripts/ci.sh             # Generated: runs the CI jobs locally (do not edit)
 ├── src/main/scala/com/example/
 │   └── HelloWorld.scala      # Application code (package com.example)
 └── src/test/scala/com/example/
@@ -79,6 +81,18 @@ nix develop --command bash -c "sbt '++2.13.18!' 'run World'"
 ```
 
 This ensures **local dev and CI are identical**.
+
+### Run CI locally
+
+`scripts/ci.sh` runs the CI workflow's commands on your machine. It is generated from `.github/workflows/ci.yml`, so regenerate it after editing the workflow:
+
+```bash
+scripts/generate-ci.py   # .github/workflows/ci.yml -> scripts/ci.sh (needs python3 + PyYAML, both in `nix develop`)
+scripts/ci.sh            # run all jobs
+scripts/ci.sh lint       # run one job
+```
+
+`run:` steps become shell commands, `uses:` steps (checkout, Nix install) are skipped, and matrix jobs loop over every combination.
 
 ## Extending the Project
 

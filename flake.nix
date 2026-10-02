@@ -17,6 +17,7 @@
             jdk21
             sbt
             git
+            (python3.withPackages (ps: [ ps.pyyaml ]))
           ];
           
           shellHook = ''
