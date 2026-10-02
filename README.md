@@ -16,7 +16,7 @@ Enter the development environment:
 nix develop
 ```
 
-You're now in a shell with JDK 21 and sbt 1.9.8 pre-configured.
+You're now in a shell with JDK 21 and sbt pre-configured. The sbt launcher is fetched from nixpkgs, and it downloads the sbt version pinned in `project/build.properties` (1.9.8).
 
 ```bash
 sbt compile     # Compile the project
@@ -42,7 +42,6 @@ This project pins:
 - **JDK**: 21 (via nixpkgs 23.11)
 - **sbt**: 1.9.8 (in `project/build.properties`)
 - **Scala**: 3.3.1 (in `build.sbt`)
-- **Dependencies**: Managed by sbt's `sbt.lock` (when running `sbt update`)
 - **Nix packages**: Locked in `flake.lock`
 
 Any developer (or CI) running `nix develop && sbt test` gets the **exact same environment** and dependency versions.
@@ -84,12 +83,6 @@ libraryDependencies ++= Seq(
 )
 ```
 
-Then:
-```bash
-sbt update  # Creates/updates sbt.lock
-git add sbt.lock
-```
-
 ### Update Scala Version
 
 Change in `build.sbt`:
@@ -125,12 +118,9 @@ sbt 'testOnly *HelloWorldTest'
 
 # Interactive Scala REPL
 sbt console
-
-# Format code
-sbt 'scalafmt'
 ```
 
 ## Notes
 
-- Commit `flake.lock` and `sbt.lock` to ensure everyone has the same versions
+- Commit `flake.lock` to ensure everyone has the same Nix package versions
 - CI does not use a binary cache. To speed up builds, create a Cachix cache, add a `CACHIX_AUTH_TOKEN` repo secret, and add a `cachix/cachix-action` step to `.github/workflows/ci.yml`
