@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Regenerate scripts/ci.sh when the CI workflow or the generator is staged.
+# Enable with: git config core.hooksPath scripts/hooks   (done by `nix develop`)
+set -euo pipefail
+cd "$(git rev-parse --show-toplevel)"
+
+if git diff --cached --quiet -- .github/workflows/ci.yml scripts/generate-ci.py; then
+  exit 0
+fi
+
+if python3 -c 'import yaml' 2>/dev/null; then
+  python3 scripts/generate-ci.py
+else
+  nix develop --command python3 scripts/generate-ci.py
+fi
+git add scripts/ci.sh
+echo "pre-commit: regenerated and staged scripts/ci.sh"

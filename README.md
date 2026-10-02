@@ -60,6 +60,7 @@ Any developer (or CI) running `nix develop && sbt test` gets the **exact same en
 ├── project/plugins.sbt       # sbt plugins (scalafmt)
 ├── .scalafmt.conf            # scalafmt config
 ├── scripts/generate-ci.py    # Generates scripts/ci.sh from the CI workflow
+├── scripts/hooks/pre-commit  # Regenerates scripts/ci.sh on commit
 ├── scripts/ci.sh             # Generated: runs the CI jobs locally (do not edit)
 ├── src/main/scala/com/example/
 │   └── HelloWorld.scala      # Application code (package com.example)
@@ -93,6 +94,8 @@ scripts/ci.sh lint       # run one job
 ```
 
 `run:` steps become shell commands, `uses:` steps (checkout, Nix install) are skipped, and matrix jobs loop over every combination.
+
+A pre-commit hook (`scripts/hooks/pre-commit`, enabled automatically by `nix develop` via `core.hooksPath`) regenerates and stages `scripts/ci.sh` whenever you commit a change to the workflow or the generator. Without Nix, enable it once with `git config core.hooksPath scripts/hooks`.
 
 The `lint` job fails if `scripts/ci.sh` is out of date with the workflow, so commit the regenerated file together with workflow changes.
 

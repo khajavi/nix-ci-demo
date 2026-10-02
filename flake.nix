@@ -21,6 +21,8 @@
           ];
           
           shellHook = ''
+            # Use the versioned git hooks (regenerates scripts/ci.sh on commit)
+            if [ -d .git ]; then git config core.hooksPath scripts/hooks; fi
             echo "Scala dev environment loaded"
             echo "JDK: $(java -version 2>&1 | head -1)"
             echo "sbt: $(sbt --version)"
