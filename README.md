@@ -94,6 +94,8 @@ scripts/ci.sh lint       # run one job
 
 `run:` steps become shell commands, `uses:` steps (checkout, Nix install) are skipped, and matrix jobs loop over every combination.
 
+The `lint` job fails if `scripts/ci.sh` is out of date with the workflow, so commit the regenerated file together with workflow changes.
+
 ## Extending the Project
 
 ### Add a Dependency

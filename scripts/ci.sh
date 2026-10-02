@@ -11,6 +11,12 @@ job_lint() {
     set -euo pipefail
     echo "==> lint: Check formatting"
     nix develop --command bash -c "sbt scalafmtCheckAll scalafmtSbtCheck"
+    echo "==> lint: Check scripts/ci.sh is up to date"
+    nix develop --command bash -c '
+      out=$(mktemp) &&
+      python3 scripts/generate-ci.py .github/workflows/ci.yml "$out" &&
+      diff -u scripts/ci.sh "$out"
+    ' || { echo "scripts/ci.sh is stale: run scripts/generate-ci.py and commit" >&2; exit 1; }
   )
 }
 
