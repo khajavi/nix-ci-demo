@@ -43,7 +43,7 @@ This project pins:
 
 - **JDK**: 21 (via nixpkgs 23.11)
 - **sbt**: 1.9.8 (in `project/build.properties`)
-- **Scala**: 3.3.1 default; cross-built for 2.13.16 and 3.3.1 (`crossScalaVersions` in `build.sbt`)
+- **Scala**: 3.3.8 default; cross-built for 2.13.16 and 3.3.8 (`crossScalaVersions` in `build.sbt`)
 - **Nix packages**: Locked in `flake.lock`
 
 Any developer (or CI) running `nix develop && sbt test` gets the **exact same environment** and dependency versions.
@@ -70,7 +70,7 @@ Any developer (or CI) running `nix develop && sbt test` gets the **exact same en
 The workflow lives in `.github/workflows/ci.yml`. It runs on pushes and pull requests to `main`, and uses the same commands as local development via `nix develop`:
 
 - **lint** job: formatting check.
-- **test** job: a matrix over Scala versions (2.13.16 and 3.3.1), each running build, tests, and the app. Keep the matrix in sync with `crossScalaVersions` in `build.sbt`.
+- **test** job: a matrix over Scala versions (2.13.16 and 3.3.8), each running build, tests, and the app. Keep the matrix in sync with `crossScalaVersions` in `build.sbt`.
 
 ```yaml
 nix develop --command bash -c "sbt scalafmtCheckAll scalafmtSbtCheck"
