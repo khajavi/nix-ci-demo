@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
@@ -21,8 +21,25 @@ jobs:
       - name: Check formatting
         run: nix develop --command bash -c "sbt scalafmtCheckAll scalafmtSbtCheck"
 
+  test:
+    name: test (Scala ${{ matrix.scala }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        # Keep in sync with crossScalaVersions in build.sbt
+        scala: ["2.13.16", "3.3.1"]
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-23.11
+          extra_nix_config: |
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+
       - name: Build and Test
-        run: nix develop --command bash -c "sbt clean +compile +test"
+        run: nix develop --command bash -c "sbt '++${{ matrix.scala }}!' clean compile test"
 
       - name: Run application
-        run: nix develop --command bash -c "sbt 'run World'"
+        run: nix develop --command bash -c "sbt '++${{ matrix.scala }}!' 'run World'"

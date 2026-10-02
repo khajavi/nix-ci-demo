@@ -69,10 +69,13 @@ Any developer (or CI) running `nix develop && sbt test` gets the **exact same en
 
 The workflow lives in `.github/workflows/ci.yml`. It runs on pushes and pull requests to `main`, and uses the same commands as local development via `nix develop`:
 
+- **lint** job: formatting check.
+- **test** job: a matrix over Scala versions (2.13.16 and 3.3.1), each running build, tests, and the app. Keep the matrix in sync with `crossScalaVersions` in `build.sbt`.
+
 ```yaml
 nix develop --command bash -c "sbt scalafmtCheckAll scalafmtSbtCheck"
-nix develop --command bash -c "sbt clean +compile +test"
-nix develop --command bash -c "sbt 'run World'"
+nix develop --command bash -c "sbt '++2.13.16!' clean compile test"  # once per matrix entry
+nix develop --command bash -c "sbt '++2.13.16!' 'run World'"
 ```
 
 This ensures **local dev and CI are identical**.
