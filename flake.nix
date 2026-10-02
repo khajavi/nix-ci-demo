@@ -10,16 +10,17 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-      in
-      {
-        devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            jdk21
-            sbt
-            git
-            (python3.withPackages (ps: [ ps.pyyaml ]))
+
+        mkDevShell = jdk: pkgs.mkShell {
+          buildInputs = [
+            jdk
+            (pkgs.sbt.override { jre = jdk; })
+            pkgs.git
+            (pkgs.python3.withPackages (ps: [ ps.pyyaml ]))
           ];
-          
+
+          JAVA_HOME = "${jdk.home}";
+
           shellHook = ''
             # Use the versioned git hooks (regenerates scripts/ci.sh on commit)
             if [ -d .git ]; then git config core.hooksPath scripts/hooks; fi
@@ -27,6 +28,13 @@
             echo "JDK: $(java -version 2>&1 | head -1)"
             echo "sbt: $(sbt --version)"
           '';
+        };
+      in
+      {
+        devShells = {
+          default = mkDevShell pkgs.jdk21;
+          jdk17 = mkDevShell pkgs.jdk17;
+          jdk21 = mkDevShell pkgs.jdk21;
         };
       }
     );

@@ -23,24 +23,46 @@ job_lint() {
 job_test() {
   # skipped (runner setup): actions/checkout@v7, cachix/install-nix-action@v31
   local failed=0
-  echo "### test (scala=2.13.18)"
+  echo "### test (scala=2.13.18, jdk=17)"
   (
     set -euo pipefail
     scala=2.13.18
+    jdk=17
     echo "==> test: Build and Test"
-    nix develop --command bash -c "sbt '++${scala}!' clean compile test"
+    nix develop .#jdk${jdk} --command bash -c "sbt '++${scala}!' clean compile test"
     echo "==> test: Run application"
-    nix develop --command bash -c "sbt '++${scala}!' 'run World'"
-  ) || { echo "FAILED: test (scala=2.13.18)" >&2; failed=1; }
-  echo "### test (scala=3.3.8)"
+    nix develop .#jdk${jdk} --command bash -c "sbt '++${scala}!' 'run World'"
+  ) || { echo "FAILED: test (scala=2.13.18, jdk=17)" >&2; failed=1; }
+  echo "### test (scala=2.13.18, jdk=21)"
+  (
+    set -euo pipefail
+    scala=2.13.18
+    jdk=21
+    echo "==> test: Build and Test"
+    nix develop .#jdk${jdk} --command bash -c "sbt '++${scala}!' clean compile test"
+    echo "==> test: Run application"
+    nix develop .#jdk${jdk} --command bash -c "sbt '++${scala}!' 'run World'"
+  ) || { echo "FAILED: test (scala=2.13.18, jdk=21)" >&2; failed=1; }
+  echo "### test (scala=3.3.8, jdk=17)"
   (
     set -euo pipefail
     scala=3.3.8
+    jdk=17
     echo "==> test: Build and Test"
-    nix develop --command bash -c "sbt '++${scala}!' clean compile test"
+    nix develop .#jdk${jdk} --command bash -c "sbt '++${scala}!' clean compile test"
     echo "==> test: Run application"
-    nix develop --command bash -c "sbt '++${scala}!' 'run World'"
-  ) || { echo "FAILED: test (scala=3.3.8)" >&2; failed=1; }
+    nix develop .#jdk${jdk} --command bash -c "sbt '++${scala}!' 'run World'"
+  ) || { echo "FAILED: test (scala=3.3.8, jdk=17)" >&2; failed=1; }
+  echo "### test (scala=3.3.8, jdk=21)"
+  (
+    set -euo pipefail
+    scala=3.3.8
+    jdk=21
+    echo "==> test: Build and Test"
+    nix develop .#jdk${jdk} --command bash -c "sbt '++${scala}!' clean compile test"
+    echo "==> test: Run application"
+    nix develop .#jdk${jdk} --command bash -c "sbt '++${scala}!' 'run World'"
+  ) || { echo "FAILED: test (scala=3.3.8, jdk=21)" >&2; failed=1; }
   return $failed
 }
 

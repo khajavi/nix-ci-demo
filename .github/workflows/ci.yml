@@ -30,13 +30,14 @@ jobs:
           ' || { echo "scripts/ci.sh is stale: run scripts/generate-ci.py and commit" >&2; exit 1; }
 
   test:
-    name: test (Scala ${{ matrix.scala }})
+    name: test (Scala ${{ matrix.scala }}, JDK ${{ matrix.jdk }})
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
-        # Keep in sync with crossScalaVersions in build.sbt
+        # scala: keep in sync with crossScalaVersions in build.sbt; jdk: devShells.jdkNN in flake.nix
         scala: ["2.13.18", "3.3.8"]
+        jdk: ["17", "21"]
     steps:
       - uses: actions/checkout@v7
 
@@ -47,7 +48,7 @@ jobs:
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Test
-        run: nix develop --command bash -c "sbt '++${{ matrix.scala }}!' clean compile test"
+        run: nix develop .#jdk${{ matrix.jdk }} --command bash -c "sbt '++${{ matrix.scala }}!' clean compile test"
 
       - name: Run application
-        run: nix develop --command bash -c "sbt '++${{ matrix.scala }}!' 'run World'"
+        run: nix develop .#jdk${{ matrix.jdk }} --command bash -c "sbt '++${{ matrix.scala }}!' 'run World'"

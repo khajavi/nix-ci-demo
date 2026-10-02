@@ -18,10 +18,5 @@ lazy val root = (project in file("."))
       "-unchecked",
       "-Xfatal-warnings"
     ),
-    javacOptions ++= Seq(
-      "-source",
-      "21",
-      "-target",
-      "21"
-    )
+    javacOptions ++= Seq("--release", "17")
   )

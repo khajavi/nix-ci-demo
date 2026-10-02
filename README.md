@@ -16,7 +16,7 @@ Enter the development environment:
 nix develop
 ```
 
-You're now in a shell with JDK 21 and sbt pre-configured. The sbt launcher is fetched from nixpkgs, and it downloads the sbt version pinned in `project/build.properties` (1.9.8).
+You're now in a shell with JDK 21 (use `nix develop .#jdk17` for JDK 17) and sbt pre-configured. The sbt launcher is fetched from nixpkgs, and it downloads the sbt version pinned in `project/build.properties` (1.9.8).
 
 ```bash
 sbt compile     # Compile the project
@@ -73,12 +73,12 @@ Any developer (or CI) running `nix develop && sbt test` gets the **exact same en
 The workflow lives in `.github/workflows/ci.yml`. It runs on pushes and pull requests to `main`, and uses the same commands as local development via `nix develop`:
 
 - **lint** job: formatting check.
-- **test** job: a matrix over Scala versions (2.13.18 and 3.3.8), each running build, tests, and the app. Keep the matrix in sync with `crossScalaVersions` in `build.sbt`.
+- **test** job: a matrix over Scala versions (2.13.18, 3.3.8) × JDKs (17, 21), each running build, tests, and the app. Keep the Scala versions in sync with `crossScalaVersions` in `build.sbt`. The JDK entries map to the `jdk17` / `jdk21` dev shells in `flake.nix` (`nix develop .#jdk17`).
 
 ```yaml
 nix develop --command bash -c "sbt scalafmtCheckAll scalafmtSbtCheck"
-nix develop --command bash -c "sbt '++2.13.18!' clean compile test"  # once per matrix entry
-nix develop --command bash -c "sbt '++2.13.18!' 'run World'"
+nix develop .#jdk17 --command bash -c "sbt '++2.13.18!' clean compile test"  # once per matrix entry
+nix develop .#jdk17 --command bash -c "sbt '++2.13.18!' 'run World'"
 ```
 
 This ensures **local dev and CI are identical**.
