@@ -18,6 +18,9 @@ jobs:
           extra_nix_config: |
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
+      - name: Check formatting
+        run: nix develop --command bash -c "sbt scalafmtCheckAll scalafmtSbtCheck"
+
       - name: Build and Test
         run: nix develop --command bash -c "sbt clean compile test"
 

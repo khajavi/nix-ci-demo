@@ -6,7 +6,7 @@ ThisBuild / organization := "com.example"
 lazy val root = (project in file("."))
   .settings(
     libraryDependencies ++= Seq(
-      "org.scalameta" %% "munit" % "0.7.29" % Test,
+      "org.scalameta" %% "munit" % "0.7.29" % Test
     ),
     scalacOptions ++= Seq(
       "-deprecation",
@@ -15,7 +15,9 @@ lazy val root = (project in file("."))
       "-Xfatal-warnings"
     ),
     javacOptions ++= Seq(
-      "-source", "21",
-      "-target", "21"
+      "-source",
+      "21",
+      "-target",
+      "21"
     )
   )

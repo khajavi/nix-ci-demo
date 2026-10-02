@@ -55,6 +55,8 @@ Any developer (or CI) running `nix develop && sbt test` gets the **exact same en
 ├── flake.lock                # Locked nix dependencies (commit this)
 ├── build.sbt                 # Scala build config
 ├── project/build.properties  # Pinned sbt version
+├── project/plugins.sbt       # sbt plugins (scalafmt)
+├── .scalafmt.conf            # scalafmt config
 ├── src/main/scala/com/example/
 │   └── HelloWorld.scala      # Application code (package com.example)
 └── src/test/scala/com/example/
@@ -66,6 +68,7 @@ Any developer (or CI) running `nix develop && sbt test` gets the **exact same en
 The workflow lives in `.github/workflows/ci.yml`. It runs on pushes and pull requests to `main`, and uses the same commands as local development via `nix develop`:
 
 ```yaml
+nix develop --command bash -c "sbt scalafmtCheckAll scalafmtSbtCheck"
 nix develop --command bash -c "sbt clean compile test"
 nix develop --command bash -c "sbt 'run World'"
 ```
@@ -118,6 +121,12 @@ sbt 'testOnly *HelloWorldTest'
 
 # Interactive Scala REPL
 sbt console
+
+# Format code (scalafmt, config in .scalafmt.conf)
+sbt scalafmtAll scalafmtSbt
+
+# Check formatting (as CI does)
+sbt scalafmtCheckAll scalafmtSbtCheck
 ```
 
 ## Notes
