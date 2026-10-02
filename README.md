@@ -13,7 +13,6 @@ A minimal Scala 3 project demonstrating reproducible builds using Nix flakes and
 Enter the development environment:
 
 ```bash
-nix flake update  # Lock versions (first time)
 nix develop
 ```
 
@@ -52,20 +51,24 @@ Any developer (or CI) running `nix develop && sbt test` gets the **exact same en
 
 ```
 .
+├── .github/workflows/ci.yml  # GitHub Actions CI workflow
 ├── flake.nix                 # Nix development environment
 ├── flake.lock                # Locked nix dependencies (commit this)
 ├── build.sbt                 # Scala build config
 ├── project/build.properties  # Pinned sbt version
-├── src/main/scala/           # Application code
-└── src/test/scala/           # Tests
+├── src/main/scala/com/example/
+│   └── HelloWorld.scala      # Application code (package com.example)
+└── src/test/scala/com/example/
+    └── HelloWorldTest.scala  # Tests
 ```
 
 ## CI/CD
 
-GitHub Actions runs the same commands locally via `nix develop`:
+The workflow lives in `.github/workflows/ci.yml`. It runs on pushes and pull requests to `main`, and uses the same commands as local development via `nix develop`:
 
 ```yaml
 nix develop --command bash -c "sbt clean compile test"
+nix develop --command bash -c "sbt 'run World'"
 ```
 
 This ensures **local dev and CI are identical**.
@@ -130,5 +133,4 @@ sbt 'scalafmt'
 ## Notes
 
 - Commit `flake.lock` and `sbt.lock` to ensure everyone has the same versions
-- Use Cachix for faster CI builds if you set up a cache (optional)
-- The workflow assumes a private Cachix cache; remove the cachix-action step if you don't use it
+- CI does not use a binary cache. To speed up builds, create a Cachix cache, add a `CACHIX_AUTH_TOKEN` repo secret, and add a `cachix/cachix-action` step to `.github/workflows/ci.yml`
