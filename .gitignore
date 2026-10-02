@@ -1,0 +1,24 @@
+# sbt
+target/
+project/target/
+dist/
+.bsp/
+
+# Scala
+*.class
+*.tasty
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# nix
+result
+result-*
+
+# OS
+*.log
